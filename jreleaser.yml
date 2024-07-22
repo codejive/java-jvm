@@ -1,0 +1,88 @@
+project:
+  name: jvm
+  description: Java Version Manager
+  longDescription: |
+    A command line tool that helps you install and manage multiple Java versions on your machine.
+  authors:
+    - Tako Schotanus
+  tags:
+    - java
+    - cli
+  license: Apache-2.0
+  links:
+    homepage: https://github.com/codejive/java-jvm
+  java:
+    groupId: org.codejive.jvm
+    version: 8
+    mainClass: org.codejive.jvm.Main
+  inceptionYear: 2024
+  stereotype: CLI
+
+assemble:
+  javaArchive:
+    jvm:
+      active: ALWAYS
+      formats:
+        - ZIP
+        - TGZ
+      mainJar:
+        path: 'target/{{distributionName}}-{{projectVersion}}.jar'
+      jars:
+        - pattern: 'target/binary/lib/*.jar'
+
+  nativeImage:
+    jvm-native:
+      active: NEVER
+      java:
+        version: 22
+      imageName: '{{distributionName}}-{{projectEffectiveVersion}}'
+      executable: jvm
+      mainJar:
+        path: 'target/{{distributionName}}-{{projectVersion}}-cli.jar'
+      graalJdks:
+        - path: 'C:\Users\tako\.jbang\cache\jdks\22'
+          platform: 'windows-x86_64'
+      upx:
+        active: NEVER
+        version: '4.2.4'
+      args:
+        - '-Duser.language=en'
+        - '-H:IncludeLocales=en'
+        - '--no-fallback'
+        - '--enable-http'
+        - '--enable-https'
+
+deploy:
+  maven:
+    nexus2:
+      maven-central:
+        active: RELEASE
+        url: https://s01.oss.sonatype.org/service/local
+        closeRepository: true
+        releaseRepository: true
+        stagingRepositories:
+          - target/staging-deploy
+
+release:
+  github:
+    owner: codejive
+    name: java-jvm
+    overwrite: true
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
+      contributors:
+        format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+
+checksum:
+  individual: true
+
+signing:
+  active: ALWAYS
+  armored: true
+
+distributions:
+  jvm:
+    artifacts:
+      - path: target/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.zip
+      - path: target/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.zip
