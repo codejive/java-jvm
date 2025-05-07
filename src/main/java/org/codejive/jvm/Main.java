@@ -204,7 +204,7 @@ public class Main {
     @Command(
             name = "uninstall",
             aliases = {"u"},
-            description = "Install a Java JDK or JRE")
+            description = "Uninstall a Java JDK or JRE")
     static class Uninstall extends CmdBase {
         private String versionOrId;
 
