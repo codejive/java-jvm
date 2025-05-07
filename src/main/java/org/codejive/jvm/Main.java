@@ -146,10 +146,10 @@ public class Main {
             CWC_LongestLine cwc = new CWC_LongestLine();
             at.getRenderer().setCWC(cwc);
             at.addRule();
-            at.addRow("Provider", "Description");
+            at.addRow("Provider", "Active", "Description");
             at.addRule();
             for (JdkProvider prov : providers) {
-                at.addRow(prov.name(), prov.description());
+                at.addRow(prov.name(), prov.canUse(), prov.description());
             }
             at.addRule();
             System.out.println(at.render());
