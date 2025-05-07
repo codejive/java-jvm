@@ -34,7 +34,7 @@
         <mainClass>org.codejive.jvm.Main</mainClass>
 
         <version.devkitman>0.1.4</version.devkitman>
-        <version.snakeyaml>2.3</version.snakeyaml>
+        <version.snakeyaml>2.4</version.snakeyaml>
         <version.picocli>4.7.7</version.picocli>
         <version.asciitable>0.3.2</version.asciitable>
         <version.slf4j>2.0.17</version.slf4j>
