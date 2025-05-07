@@ -1,4 +1,8 @@
 // spotless:off Dependencies for JBang
+//DEPS dev.jbang:devkitman:0.1.4
+//DEPS org.yaml:snakeyaml:2.4
+//DEPS info.picocli:picocli:4.7.7
+//DEPS de.vandermeer:asciitable:0.3.2
 //SOURCES Jvm.java util/Version.java
 // spotless:on
 
