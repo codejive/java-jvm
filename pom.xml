@@ -35,7 +35,7 @@
 
         <version.devkitman>0.1.4</version.devkitman>
         <version.snakeyaml>2.3</version.snakeyaml>
-        <version.picocli>4.7.6</version.picocli>
+        <version.picocli>4.7.7</version.picocli>
         <version.asciitable>0.3.2</version.asciitable>
         <version.slf4j>2.0.17</version.slf4j>
         <version.jspecify>1.0.0</version.jspecify>
