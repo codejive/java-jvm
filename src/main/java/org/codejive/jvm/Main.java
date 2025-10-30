@@ -1,5 +1,5 @@
 // spotless:off Dependencies for JBang
-//DEPS dev.jbang:devkitman:0.1.4
+//DEPS dev.jbang:devkitman:0.3.0
 //DEPS org.yaml:snakeyaml:2.4
 //DEPS info.picocli:picocli:4.7.7
 //DEPS de.vandermeer:asciitable:0.3.2
