@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.codejive.jvm</groupId>
     <artifactId>jvm</artifactId>
-    <version>0.1.0</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <name>Java Package Manager</name>
     <description>A command line tool that helps you install and manage multiple Java versions on your machine.</description>
