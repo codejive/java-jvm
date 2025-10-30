@@ -1,0 +1,21 @@
+name: jvm
+description: A command line tool that helps you install and manage multiple Java versions on your machine.
+authors:
+- Tako Schotanus (tako@codejive.org)
+links:
+  homepage: https://github.com/codejive/java-jvm
+  repository: https://github.com/codejive/java-jpm
+  documentation: https://github.com/codejive/java-jvm/blob/main/README.md
+java: 11
+dependencies:
+  - dev.jbang:devkitman:0.1.4
+  - de.vandemeer:asciitable:0.3.2
+  - info.picocli:picocli:4.7.7
+  - org.yaml:snakeyaml:2.5
+  - org.slf4j:slf4j-api:2.0.17
+  - org.slf4j:slf4j-simple:2.0.17
+actions:
+  clean: ./mvnw clean
+  build: ./mvnw spotless:apply package -DskipTests
+  run: ./target/binary/bin/jvm
+  test: ./mvnw test
