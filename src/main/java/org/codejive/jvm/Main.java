@@ -78,7 +78,7 @@ public class Main {
         public Integer call() {
             JdkManager manager = JdkManager.create();
             manager.getOrInstallJdk("11+");
-            List<Jdk> jdks = manager.listInstalledJdks();
+            List<Jdk.InstalledJdk> jdks = manager.listInstalledJdks();
             jdks.sort(Comparator.<Jdk>naturalOrder().reversed());
 
             AsciiTable at = new AsciiTable();
@@ -87,7 +87,7 @@ public class Main {
             at.addRule();
             at.addRow("V", "Version", "Id", "Provider", "Home");
             at.addRule();
-            for (Jdk jdk : jdks) {
+            for (Jdk.InstalledJdk jdk : jdks) {
                 at.addRow(
                         jdk.majorVersion(),
                         jdk.version(),
@@ -111,7 +111,7 @@ public class Main {
         public Integer call() {
             System.err.println("Retrieving available Java versions, this can take a moment...");
             JdkManager manager = JdkManager.create();
-            List<Jdk> jdks = manager.listAvailableJdks();
+            List<Jdk.AvailableJdk> jdks = manager.listAvailableJdks();
             jdks.sort(Comparator.<Jdk>naturalOrder().reversed());
 
             AsciiTable at = new AsciiTable();
@@ -120,7 +120,7 @@ public class Main {
             at.addRule();
             at.addRow("V", "Version", "Id", "Provider");
             at.addRule();
-            for (Jdk jdk : jdks) {
+            for (Jdk.AvailableJdk jdk : jdks) {
                 at.addRow(jdk.majorVersion(), jdk.version(), jdk.id(), jdk.provider().name());
             }
             at.addRule();
@@ -193,7 +193,9 @@ public class Main {
                     return 2;
                 }
             }
-            jdk.install();
+            if (jdk.isInstalled()) {
+                ((Jdk.AvailableJdk) jdk).install();
+            }
             if (!quiet) {
                 System.err.println("Successfully installed Java version " + versionOrId);
             }
@@ -216,7 +218,8 @@ public class Main {
         @Override
         public Integer call() {
             JdkManager jdkMan = JdkManager.create();
-            Jdk jdk = jdkMan.getInstalledJdk(versionOrId, JdkProvider.Predicates.canUpdate);
+            Jdk.InstalledJdk jdk =
+                    jdkMan.getInstalledJdk(versionOrId, JdkProvider.Predicates.canUpdate);
             if (jdk == null) {
                 System.err.println("Java version not installed: " + versionOrId);
                 return 1;
@@ -294,7 +297,8 @@ public class Main {
                 return 0;
             }
             JdkManager jdkMan = JdkManager.create();
-            Jdk jdk = jdkMan.getOrInstallJdk(javaVersionOptionMixin.getVersionOrId(quiet));
+            Jdk.InstalledJdk jdk =
+                    jdkMan.getOrInstallJdk(javaVersionOptionMixin.getVersionOrId(quiet));
             if (Paths.get(cmd.get(0)).getNameCount() == 1) {
                 Path cmdPath = OsUtils.searchPath(cmd.get(0), jdk.home().resolve("bin").toString());
                 if (cmdPath != null) {
