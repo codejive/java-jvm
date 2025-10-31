@@ -51,6 +51,12 @@ public class Main {
     boolean showHelp;
 
     @Option(
+            names = {"-v", "--version"},
+            description = "Show application version.",
+            versionHelp = true)
+    boolean showVersion;
+
+    @Option(
             names = {"--quiet"},
             description = "We will be quiet, only print when error occurs.")
     boolean quiet;
