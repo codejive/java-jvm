@@ -1,5 +1,5 @@
 // spotless:off Dependencies for JBang
-//DEPS dev.jbang:devkitman:0.3.0
+//DEPS dev.jbang:devkitman:0.4.2
 //DEPS org.yaml:snakeyaml:2.4
 //DEPS info.picocli:picocli:4.7.7
 //DEPS de.vandermeer:asciitable:0.3.2
@@ -44,36 +44,39 @@ import picocli.CommandLine.*;
         })
 public class Main {
 
+    static boolean verbose = false;
+    static boolean quiet = false;
+
     @Option(
             names = {"-h", "--help"},
             description = "Show this help message and exit.",
-            usageHelp = true)
+            usageHelp = true,
+            scope = CommandLine.ScopeType.INHERIT)
     boolean showHelp;
 
     @Option(
-            names = {"-v", "--version"},
+            names = {"-q", "--quiet"},
+            description = "We will be quiet, only print when error occurs.",
+            scope = CommandLine.ScopeType.INHERIT)
+    public void setQuiet(boolean quiet) {
+        Main.quiet = quiet;
+    }
+
+    @Option(
+            names = {"-v", "--verbose"},
+            description = "Enable verbose output for debugging",
+            scope = CommandLine.ScopeType.INHERIT)
+    public void setVerbose(boolean verbose) {
+        Main.verbose = verbose;
+    }
+
+    @Option(
+            names = {"-V", "--version"},
             description = "Show application version.",
             versionHelp = true)
     boolean showVersion;
 
-    @Option(
-            names = {"--quiet"},
-            description = "We will be quiet, only print when error occurs.")
-    boolean quiet;
-
-    abstract static class CmdBase implements Callable<Integer> {
-        @Option(
-                names = {"-h", "--help"},
-                description = "Show this help message and exit.",
-                usageHelp = true,
-                scope = CommandLine.ScopeType.INHERIT)
-        boolean showHelp;
-
-        @Option(
-                names = {"--quiet"},
-                description = "We will be quiet, only print when error occurs.")
-        boolean quiet;
-    }
+    abstract static class CmdBase implements Callable<Integer> {}
 
     @Command(
             name = "list",
@@ -230,7 +233,7 @@ public class Main {
                 System.err.println("Java version not installed: " + versionOrId);
                 return 1;
             }
-            jdkMan.uninstallJdk(jdk);
+            jdk.uninstall();
             if (!quiet) {
                 System.err.println("Successfully uninstalled Java version " + versionOrId);
             }
@@ -426,6 +429,18 @@ public class Main {
     private static boolean isId(String s) {
         return s.matches("[a-zA-Z0-9_\\-.]+");
     }
+
+    static CommandLine.IExecutionExceptionHandler errorHandler =
+            (ex, commandLine, parseResult) -> {
+                System.err.println("Error: " + ex.getMessage());
+                if (verbose) {
+                    ex.printStackTrace();
+                } else if (!quiet) {
+                    System.err.println(
+                            "(Run with --verbose for more details. If you believe you found a bug in jpm, open an issue at https://github.com/codejive/java-jpm/issues)");
+                }
+                return commandLine.getCommandSpec().exitCodeOnExecutionException();
+            };
 
     /**
      * Main entry point for the jvm command line tool.
