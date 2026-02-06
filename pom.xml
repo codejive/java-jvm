@@ -336,6 +336,14 @@
                         </executions>
                         <configuration>
                             <mainClass>${mainClass}</mainClass>
+                            <imageName>jvm</imageName>
+                            <buildArgs>
+                                <buildArg>--no-fallback</buildArg>
+                                <buildArg>-H:+ReportExceptionStackTraces</buildArg>
+                                <buildArg>--enable-url-protocols=http,https</buildArg>
+                                <buildArg>--initialize-at-build-time=org.slf4j</buildArg>
+                                <buildArg>--initialize-at-run-time=com.google.gson.internal.UnsafeAllocator</buildArg>
+                            </buildArgs>
                         </configuration>
                     </plugin>
                 </plugins>
