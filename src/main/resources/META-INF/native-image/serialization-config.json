@@ -1,0 +1,27 @@
+[
+  {
+    "name": "dev.jbang.devkitman.jdkinstallers.FoojayJdkInstaller$VersionsResponse"
+  },
+  {
+    "name": "dev.jbang.devkitman.jdkinstallers.FoojayJdkInstaller$JdkResult"
+  },
+  {
+    "name": "dev.jbang.devkitman.jdkinstallers.FoojayJdkInstaller$JdkResultLinks"
+  },
+  {
+    "name": "dev.jbang.devkitman.jdkinstallers.FoojayJdkInstaller$AvailableFoojayJdk"
+  },
+  {
+    "name": "dev.jbang.devkitman.jdkinstallers.MetadataJdkInstaller$MetadataResult"
+  },
+  {
+    "name": "dev.jbang.devkitman.jdkinstallers.MetadataJdkInstaller$AvailableMetadataJdk"
+  },
+  {
+    "name": "dev.jbang.devkitman.jdkproviders.DefaultJdkProvider$AvailableDefaultJdk"
+  },
+  {
+    "name": "dev.jbang.devkitman.jdkproviders.LinkedJdkProvider$AvailableLinkedJdk"
+  }
+]
+
