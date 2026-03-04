@@ -1,4 +1,4 @@
-oes# jvm - Java Version Manager
+# jvm - Java Version Manager
 
 A command line tool that helps you install and manage multiple Java versions on your machine.
 
