@@ -33,7 +33,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <native.maven.plugin>0.11.2</native.maven.plugin>
         <mainClass>org.codejive.jvm.Main</mainClass>
-        <version.devkitman>0.4.2</version.devkitman>
+        <version.devkitman>0.4.3</version.devkitman>
+        <version.httpclient>5.6</version.httpclient>
         <version.asciitable>0.3.2</version.asciitable>
         <version.picocli>4.7.7</version.picocli>
         <version.snakeyaml>2.5</version.snakeyaml>
@@ -50,6 +51,11 @@
             <groupId>dev.jbang</groupId>
             <artifactId>devkitman</artifactId>
             <version>${version.devkitman}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5-cache</artifactId>
+            <version>${version.httpclient}</version>
         </dependency>
         <dependency>
             <groupId>de.vandermeer</groupId>
@@ -76,7 +82,12 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${version.slf4j}</version>
         </dependency>
-        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.slf4j}</version>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
