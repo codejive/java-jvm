@@ -85,7 +85,7 @@ public class Main {
     static class ListInstalled extends CmdBase {
         @Override
         public Integer call() {
-            JdkManager manager = JdkManager.create();
+            JdkManager manager = createJdkManager();
             manager.getOrInstallJdk("11+");
             List<Jdk.InstalledJdk> jdks = manager.listInstalledJdks();
             jdks.sort(Comparator.<Jdk>naturalOrder().reversed());
@@ -119,7 +119,7 @@ public class Main {
         @Override
         public Integer call() {
             System.err.println("Retrieving available Java versions, this can take a moment...");
-            JdkManager manager = JdkManager.create();
+            JdkManager manager = createJdkManager();
             List<Jdk.AvailableJdk> jdks = manager.listAvailableJdks();
             jdks.sort(Comparator.<Jdk>naturalOrder().reversed());
 
@@ -183,7 +183,7 @@ public class Main {
         @Override
         public Integer call() {
             String versionOrId = javaVersionParamMixin.getVersionOrId(quiet);
-            JdkManager jdkMan = JdkManager.create();
+            JdkManager jdkMan = createJdkManager();
             Jdk jdk = jdkMan.getInstalledJdk(versionOrId, JdkProvider.Predicates.canUpdate);
             if (!force && jdk != null) {
                 if (!quiet) {
@@ -226,7 +226,7 @@ public class Main {
 
         @Override
         public Integer call() {
-            JdkManager jdkMan = JdkManager.create();
+            JdkManager jdkMan = createJdkManager();
             Jdk.InstalledJdk jdk =
                     jdkMan.getInstalledJdk(versionOrId, JdkProvider.Predicates.canUpdate);
             if (jdk == null) {
@@ -283,7 +283,7 @@ public class Main {
 
         @Override
         public Integer call() {
-            JdkManager jdkMan = JdkManager.create();
+            JdkManager jdkMan = createJdkManager();
             Jdk jdk = jdkMan.getOrInstallJdk(javaVersionParamMixin.getVersionOrId(quiet));
             return 0;
         }
@@ -305,7 +305,7 @@ public class Main {
             if (cmd.isEmpty()) {
                 return 0;
             }
-            JdkManager jdkMan = JdkManager.create();
+            JdkManager jdkMan = createJdkManager();
             Jdk.InstalledJdk jdk =
                     jdkMan.getOrInstallJdk(javaVersionOptionMixin.getVersionOrId(quiet));
             if (Paths.get(cmd.get(0)).getNameCount() == 1) {
@@ -428,6 +428,29 @@ public class Main {
 
     private static boolean isId(String s) {
         return s.matches("[a-zA-Z0-9_\\-.]+");
+    }
+
+    private static JdkManager createJdkManager() {
+        Path installPath = JBangJdkProvider.getJBangJdkDir();
+        Path cachePath = cachePath();
+        JdkDiscovery.Config cfg = new JdkDiscovery.Config(installPath, cachePath, null);
+        cfg.properties()
+                .put("link", JBangJdkProvider.getJBangConfigDir().resolve("currentjdk").toString());
+        return JdkManager.builder().providers(JdkProviders.instance().all(cfg)).build();
+    }
+
+    private static Path cachePath() {
+        String cachePath = System.getenv("JVM_CACHE");
+        Path cacheDir = null;
+        if (cachePath == null) {
+            cachePath = System.getProperty("jvm.cache");
+            if (cachePath != null) {
+                cacheDir = Paths.get(cachePath);
+            } else {
+                cacheDir = Paths.get(System.getProperty("user.home"), ".cache", "jvm");
+            }
+        }
+        return cacheDir;
     }
 
     static CommandLine.IExecutionExceptionHandler errorHandler =
