@@ -22,12 +22,58 @@ jvm --help
 
 ## Development
 
-To build the project simply run:
+### Prerequisites
+
+- **Java 11+** — required to compile and run (`JAVA_HOME` must be set)
+- **Maven** — provided via the included wrapper (`mvnw` / `mvnw.cmd`), no separate install needed
+
+### Building
+
+Full build with formatting and tests:
 
 ```shell
 ./mvnw spotless:apply clean verify
 ```
- mavern have
+
+Quick build, skipping tests:
+
+```shell
+./mvnw clean package -DskipTests
+```
+
+The build produces two JARs in `target/`:
+
+- `jvm-<version>.jar` — thin JAR (no bundled dependencies)
+- `jvm-<version>-cli.jar` — fat JAR, runnable directly
+
+### Running the Built Artifact
+
+```shell
+java -jar target/jvm-<version>-cli.jar --help
+java -jar target/jvm-<version>-cli.jar --version
+java -jar target/jvm-<version>-cli.jar list
+```
+
+Or use the assembled launcher from `target/binary/bin/`:
+
+```shell
+# Linux/macOS
+./target/binary/bin/jvm --help
+# Windows
+target\binary\bin\jvm.bat --help
+```
+
+### Code Formatting
+
+The project uses [Spotless](https://github.com/diffplug/spotless) with Google Java Format (AOSP style).
+
+```shell
+# Apply formatting
+./mvnw spotless:apply
+# Check without modifying
+./mvnw spotless:check
+```
+
 ### Building Native Executables
 
 The project supports building native executables using GraalVM. This creates a standalone binary with faster startup time and lower memory footprint.
