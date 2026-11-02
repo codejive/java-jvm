@@ -34,6 +34,7 @@ import picocli.CommandLine.*;
             Main.ListInstalled.class,
             Main.ListAvailable.class,
             Main.ListProviders.class,
+            Main.ListDistros.class,
             Main.Install.class,
             Main.Uninstall.class,
             Main.Default.class,
@@ -43,9 +44,30 @@ import picocli.CommandLine.*;
             Main.Run.class
         })
 public class Main {
-
+    static List<String> providers;
+    static List<String> distros;
     static boolean verbose = false;
     static boolean quiet = false;
+
+    @Option(
+            names = {"-P", "--providers"},
+            description =
+                    "Selects the providers to use. Run 'jvm list-providers' to see the available providers. Multiple providers can be specified separated by comma.",
+            split = ",",
+            scope = CommandLine.ScopeType.INHERIT)
+    void setProviders(List<String> providers) {
+        Main.providers = providers;
+    }
+
+    @Option(
+            names = {"-D", "--distros"},
+            description =
+                    "Selects the distributions to use when installing JDKs. Run 'jvm list-distros' to see the available distributions. Multiple distributions can be specified separated by comma.",
+            split = ",",
+            scope = CommandLine.ScopeType.INHERIT)
+    void setDistros(List<String> distros) {
+        Main.distros = distros;
+    }
 
     @Option(
             names = {"-h", "--help"},
@@ -159,6 +181,35 @@ public class Main {
             at.addRule();
             for (JdkProvider prov : providers) {
                 at.addRow(prov.name(), prov.canUse(), prov.description());
+            }
+            at.addRule();
+            System.out.println(at.render());
+
+            return 0;
+        }
+    }
+
+    @Command(
+            name = "list-distros",
+            aliases = {"ld"},
+            description =
+                    "List the available JDK distributions that can be used for '--distros' options")
+    static class ListDistros extends CmdBase {
+        @Override
+        public Integer call() {
+            System.err.println("Retrieving available distributions, this can take a moment...");
+            JdkManager manager = createJdkManager();
+            List<JdkDistroQuery.JdkDistro> distros = manager.listDistros();
+            distros.sort(Comparator.comparing(JdkDistroQuery.JdkDistro::name));
+
+            AsciiTable at = new AsciiTable();
+            CWC_LongestLine cwc = new CWC_LongestLine();
+            at.getRenderer().setCWC(cwc);
+            at.addRule();
+            at.addRow("Distribution");
+            at.addRule();
+            for (JdkDistroQuery.JdkDistro distro : distros) {
+                at.addRow(distro.name());
             }
             at.addRule();
             System.out.println(at.render());
@@ -436,7 +487,16 @@ public class Main {
         JdkDiscovery.Config cfg = new JdkDiscovery.Config(installPath, cachePath, null);
         cfg.properties()
                 .put("link", JBangJdkProvider.getJBangConfigDir().resolve("currentjdk").toString());
-        return JdkManager.builder().providers(JdkProviders.instance().all(cfg)).build();
+        if (distros != null && !distros.isEmpty()) {
+            cfg.properties().put("distro", String.join(",", distros));
+        }
+        List<JdkProvider> provs;
+        if (providers == null || providers.isEmpty()) {
+            provs = JdkProviders.instance().all(cfg);
+        } else {
+            provs = JdkProviders.instance().parseNames(cfg, providers.toArray(new String[0]));
+        }
+        return JdkManager.builder().providers(provs).build();
     }
 
     private static Path cachePath() {

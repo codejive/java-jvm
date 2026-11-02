@@ -1,5 +1,7 @@
 # jvm - Java Version Manager
 
+**NOTICE:** this project has been archived in favor of [jvm](https://github.com/codejive/jvm)
+
 A command line tool that helps you install and manage multiple Java versions on your machine.
 
 ## Installation
